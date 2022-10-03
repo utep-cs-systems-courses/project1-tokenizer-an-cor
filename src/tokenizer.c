@@ -24,7 +24,7 @@ char *word_start(char *str){
 }
 
 char *word_terminator(char *word){
-  word = space_char(word);
+  word = word_start(word);
   // while not a space character and not the end, keep moviong forward
   while(non_space_char(*word) && word != '\0'){
     word++;
@@ -60,12 +60,31 @@ char *copy_str(char *inStr, short len){
 char **tokenize(char* str){
   int num_words = count_words(str);
   char **tokens = (char **)malloc(sizeof(char *)*(num_words+1));
+  int word_len = 0;
+
+  for(int i =0; i < num_words; i++){
+    str = word_start(str);
+    word_len = word_terminator(str) - word_start(str); // get the length of the word to make enough memory space in copy_str
+    tokens[i] = copy_str(str, word_len);
+    str = word_terminator(str)+1; // move the location of pointer to space after word
+  }
+  tokens[num_words] = '\0'; // make last value at token to be a terminating zero
 
   return str;
 }
 
 void print_tokens(char **tokens){
+  for(int i=0; tokens[i] != NULL; i++){
+    printf("%s\n", tokens[i]);
+  }
 }
 
 void free_tokens(char **tokens){
+  int i = 0;
+  // while tokens[i] != null
+  while(tokens[i]){
+    free(tokens[i]);
+    i++;
+  }
+  free(tokens);
 }
