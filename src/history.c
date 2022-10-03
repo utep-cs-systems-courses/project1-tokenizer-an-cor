@@ -1,9 +1,11 @@
 #include "malloc.h"
 #include "history.h"
-
-List *list = 0;
+#include <stdlib.h>
+#include <stdio.h>
 
 List* init_history(){
+  List *list = malloc(sizeOf(List)); // make space as much as the data structure needs
+  list->root = NULL; // initialize the root to null
   return *list;
 }
 
