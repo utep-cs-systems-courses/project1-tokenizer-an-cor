@@ -10,15 +10,6 @@ all: tokenizer
 tokenizer: $(OBJS)
 	cc -o tokenizer $(CFLAGS) $(OBJS)
 
-# include file dependencies
-tokenizer.o: tokenizer.h
-uimain.o: tokenizer.h
-history.o: history.h
-
-# $@=target, $^=prerequisites
-uimain.O: tokenizer.o uimain.o history.o
-	cc -o $@ $^ $(CFLAGS) $(OBJS)
-
 # all object files built from c built by tokenizer.h and history.h
 $(OBJS): tokenizer.h history.h
 

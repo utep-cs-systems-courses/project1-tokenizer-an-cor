@@ -1,45 +1,57 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "tokenizer.h"
 #include "history.h"
-# define MAX 100 // define max amount of chars where the string read is copied
+#define MAX 100 // define max amount of chars where the string read is copied
 
 int main() 
-{
-  puts("Welcome!");
-
+{ 
+  puts("\nWelcome!");
   char input[MAX];
-
+  int num;
+  char num_io[MAX];
+  List *history = init_history();
   while (1) { // Infinite while loop
 
-    fputs("Select an option (Tokenize = a), (History = b), (Show all previous history = c)  or 'q' to quit\n> ", stdout);
-    fflush(stdout);		/* stdout only flushes automatically on \n */
-    int c;
-    while ((c = getchar()) == '\n'); /* ignore newlines */
-    if (c == EOF)		     /* terminate on end-of-file */
-      goto done;
+    printf("\nSelect an option (Tokenize = a), (Show previous token = b), (Show all previous history = c)  or 'q' to quit\n", stdout);
+    printf(">>");
+    // use fgets at [0] to get the first char
+    fgets(input, MAX, stdin);
 
+    char c = input[0];
     // Given the user answer, select which method to call
     switch (c) {
     case 'a':
-      puts("You selected tokenize\n");
-      puts("Please enter a string to tokenize:\n>");
+      printf("You selected tokenize.\n");
+      printf("Please enter a string to tokenize:\n");
+      printf(">>");
       fgets(input,MAX,stdin);
+      char *input_pt = input;
+      add_history(history,input_pt);
       char **tokens = tokenize(input);
+      printf("Here are the tokens being printed >>\n");
       print_tokens(tokens);
       free_tokens(tokens);
       break;
-      
     case 'b':
-      puts("You selected to show history");
+      printf("Please enter an id (number of token):\n");
+      printf(">>");
+      fgets(num_io,MAX,stdin);
+      num = atoi(num_io);
+      printf(get_history(history, num));
+      printf("\n");
       break;
       
     case 'c':
-      puts("You selected to show all prvious history");
+      printf("You selected to show all prvious history");
+      print_history(history);
       break;
       
     case 'q':
-      puts("Bye!");
-      goto done; 		/* terminate */
+      printf("Bye!");
+      goto done; // terminate
+      
     case '\n':
       break;
     default:
@@ -48,5 +60,6 @@ int main()
   }
 
  done: // To exit from program
+  free_history(history);
   return 0;
 }

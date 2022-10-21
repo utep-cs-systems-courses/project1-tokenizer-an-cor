@@ -3,21 +3,21 @@
 #include <stdlib.h>
 
 int space_char(char c){
-  if(c== ' ' || c == '\t'){
+  if(c== ' ' || c == '\t' && c != '\0'){
     return 1;
   }
   return 0;
 }
 
 int non_space_char(char c){
-  if(c != ' ' || c != '\t' || c == '\0'){
-    return 0;
+  if(c != ' ' && c != '\t' && c != '\0'){
+    return 1;
   }
-  return 1;
+  return 0;
 }
 
 char *word_start(char *str){
-  while(space_char(*str) && *str != '\0'){
+  while(space_char(*str)){
     str++;
   }
   return str;
@@ -26,7 +26,7 @@ char *word_start(char *str){
 char *word_terminator(char *word){
   word = word_start(word);
   // while not a space character and not the end, keep moviong forward
-  while(non_space_char(*word) && word != '\0'){
+  while(non_space_char(*word)){
     word++;
   }
   return word;
@@ -34,12 +34,12 @@ char *word_terminator(char *word){
 
 int count_words(char *str){
   int count =0;
-  char *pt = word_start(str);
-  while(*pt != '\0'){
+  str  = word_start(str);
+  while(*str != '\0'){
     //move forward each word until the end
-    pt = word_start(pt);
-    count += 1;
-    pt = word_terminator(pt);
+    str = word_start(str);
+    count++;
+    str = word_terminator(str);
   }
   return count;
 }
@@ -60,20 +60,19 @@ char *copy_str(char *inStr, short len){
 char **tokenize(char* str){
   int num_words = count_words(str);
   char **tokens = (char **)malloc(sizeof(char *)*(num_words+1));
-  int word_len = 0;
-
+  int word_len = 0; // holds length of each token
   for(int i =0; i < num_words; i++){
     str = word_start(str);
     word_len = word_terminator(str) - word_start(str); // get the length of the word to make enough memory space in copy_str
     tokens[i] = copy_str(str, word_len);
-    str = word_terminator(str)+1; // move the location of pointer to space after word
+    str = word_terminator(str); // move pointer to end of word
   }
   tokens[num_words] = '\0'; // make last value at token to be a terminating zero
-
-  return str;
+  return tokens;
 }
 
 void print_tokens(char **tokens){
+  printf("_______________________\n");
   for(int i=0; tokens[i] != NULL; i++){
     printf("%s\n", tokens[i]);
   }
